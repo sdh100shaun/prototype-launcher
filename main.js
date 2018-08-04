@@ -1,27 +1,9 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, protocol} = require('electron')
 const path = require('path')
-const { spawn } = require('child_process');
+const launcher = require('./launcher')
 
-const pk = spawn('node', ['/Volumes/Development/dvsa-olcs/start.js'], {
-  detached: true,
-  cwd: '/Volumes/Development/dvsa-olcs/'
-});
-
-pk.stdout.on('data', (data) => {
-  console.log(`pk stdout: ${data}`);
-});
-
-pk.stderr.on('data', (data) => {
-  console.log(`pk stderr: ${data}`);
-});
-
-pk.on('close', (code) => {
-  if (code !== 0) {
-    console.log(`pk process exited with code ${code}`);
-  }
-
-});
+var children = launcher.launch()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -63,10 +45,18 @@ app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
-    pk.kill('SIGINT')
     app.quit()
   }
+  process.on('exit', function() {
+  console.log('killing', children.length, 'child processes');
+  children.forEach(function(child) {
+    child.kill();
+  });
+});
+
 })
+
+
 
 app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
