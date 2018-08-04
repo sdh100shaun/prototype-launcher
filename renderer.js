@@ -1,5 +1,6 @@
 
 const {app, BrowserWindow, protocol, remote} = require('electron')
+const url = {local:'http://localhost:3000',remote:'https://dvsa-olcs.herokuapp.com/'}
 
 document.querySelector('#btnExit').addEventListener('click',
   ()=>{
@@ -8,15 +9,12 @@ document.querySelector('#btnExit').addEventListener('click',
   }
 )
 
-document.querySelector('#app-start').addEventListener('click',
-  ()=>{
-    remote.shell.openExternal('http://localhost:3000');
-  }
-)
-
-document.querySelector('#app-stop').addEventListener('click',
-  ()=>{
-        var window = remote.getCurrentWindow();
-        app.quit()
-  }
-)
+var radios = document.querySelectorAll('input'),
+			result;
+		for (var i = 0; i < radios.length; i++) {
+	    result = radios[i];
+	    result.addEventListener('click', function() {
+           let site = this.getAttribute("value");
+			     remote.shell.openExternal(url[site]);
+		});
+	}

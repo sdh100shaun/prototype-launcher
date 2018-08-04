@@ -5,10 +5,8 @@ const launcher = require('./launcher')
 
 var children = launcher.launch()
 
-
 let tray
 
-// define the tray
 app.on('after-create-window', () => {
     tray = app.tray
 })
@@ -24,7 +22,7 @@ const PROTOCOL_PREFIX = 'file'
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 400,
-    height: 750,
+    height: 720,
     icon: path.join(__dirname, 'icons/mac/Icon-64.png'),
 
   })
@@ -50,6 +48,7 @@ function createWindow () {
 app.on('ready', () => {
     createWindow()
     app.dock.setIcon(path.join(__dirname, 'icons/mac/dock.png'))
+
   })
 
 
