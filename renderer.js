@@ -1,5 +1,5 @@
-const remote = require('electron').remote;
 
+const {app, BrowserWindow, protocol, remote} = require('electron')
 
 document.querySelector('#btnExit').addEventListener('click',
   ()=>{
@@ -11,5 +11,12 @@ document.querySelector('#btnExit').addEventListener('click',
 document.querySelector('#app-start').addEventListener('click',
   ()=>{
     remote.shell.openExternal('http://localhost:3000');
+  }
+)
+
+document.querySelector('#app-stop').addEventListener('click',
+  ()=>{
+        var window = remote.getCurrentWindow();
+        app.quit()
   }
 )

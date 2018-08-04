@@ -5,6 +5,18 @@ const launcher = require('./launcher')
 
 var children = launcher.launch()
 
+
+let tray
+
+// define the tray
+app.on('after-create-window', () => {
+    tray = app.tray
+})
+
+// set image
+let changeIcon = () => {
+    tray.setImage(path.join(__dirname, 'icons/mac/Icon-64.png'))
+}
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -13,7 +25,7 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 400,
     height: 750,
-    //icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+    icon: path.join(__dirname, 'icons/mac/Icon-64.png'),
 
   })
 
@@ -37,6 +49,7 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
     createWindow()
+    app.dock.setIcon(path.join(__dirname, 'icons/mac/dock.png'))
   })
 
 
