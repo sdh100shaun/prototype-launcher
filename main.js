@@ -1,13 +1,39 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, protocol} = require('electron')
+const path = require('path')
+const { spawn } = require('child_process');
+
+const pk = spawn('node', ['/Volumes/Development/dvsa-olcs/start.js'], {
+  detached: true,
+  cwd: '/Volumes/Development/dvsa-olcs/'
+});
+
+pk.stdout.on('data', (data) => {
+  console.log(`pk stdout: ${data}`);
+});
+
+pk.stderr.on('data', (data) => {
+  console.log(`pk stderr: ${data}`);
+});
+
+pk.on('close', (code) => {
+  if (code !== 0) {
+    console.log(`pk process exited with code ${code}`);
+  }
+
+});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
-
+const PROTOCOL_PREFIX = 'file'
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 400, height: 400})
+  mainWindow = new BrowserWindow({width: 400,
+    height: 750,
+    //icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+
+  })
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
@@ -27,13 +53,17 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+    createWindow()
+  })
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
+    pk.kill('SIGINT')
     app.quit()
   }
 })
