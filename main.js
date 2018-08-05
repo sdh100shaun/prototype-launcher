@@ -2,6 +2,7 @@
 const {app, BrowserWindow, protocol} = require('electron')
 const path = require('path')
 const launcher = require('./launcher')
+const psTree = require('pstree');
 
 var children = launcher.launch()
 
@@ -62,11 +63,18 @@ app.on('window-all-closed', function () {
   process.on('exit', function() {
   console.log('killing', children.length, 'child processes');
   children.forEach(function(child) {
-    child.kill();
+    kill(child.pid)
   });
 });
 
 })
+app.on('quit', () =>{
+  console.log('killing', children.length, 'child processes');
+  children.forEach(function(child) {
+    child.kill()
+  });
+})
+
 
 
 
@@ -80,3 +88,10 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+const delay = ms => {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+};
+
+delay(5000)

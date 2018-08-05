@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "fix-path": "^2.1.0",
+    "pstree": "0.0.1",
     "shelljs": "^0.8.2"
   }
 }
